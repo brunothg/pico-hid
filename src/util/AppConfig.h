@@ -20,6 +20,7 @@
 #define PICO_HID_APPCONFIG_H
 
 #include <string>
+#include "pico/stdlib.h"
 
 namespace brunothg_pico_hid {
 
@@ -33,12 +34,57 @@ namespace brunothg_pico_hid {
         /**
          * The name of this app
          */
-        static const std::string appName;
+        static const std::string APP_NAME;
 
         /**
          * The version of this app
          */
-        static const std::string appVersion;
+        static const std::string APP_VERSION;
+
+        /**
+         * The main status LED pin nr
+         */
+        static const uint PIN_LED_STATUS;
+
+        /**
+         * The keyboard status LED pin nr
+         */
+        static const uint PIN_LED_KEYBOARD;
+
+        /**
+         * The mouse status LED pin nr
+         */
+        static const uint PIN_LED_MOUSE;
+
+        /**
+         * The mouse buttons status LED pin nr
+         */
+        static const uint PIN_LED_MOUSE_BUTTON;
+
+        /**
+         * The keyboard button pin nr
+         */
+        static const uint PIN_BTN_KEYBOARD;
+
+        /**
+         * The mouse button pin nr
+         */
+        static const uint PIN_BTN_MOUSE;
+
+        /**
+         * The mouse buttons button pin nr
+         */
+        static const uint PIN_BTN_MOUSE_BUTTON;
+
+        /**
+         * The speed-up button pin nr
+         */
+        static const uint PIN_BTN_SPEED_UP;
+
+        /**
+         * The speed-down button pin nr
+         */
+        static const uint PIN_BTN_SPEED_DOWN;
 
     };
 

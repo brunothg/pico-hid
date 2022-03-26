@@ -16,23 +16,28 @@
 * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#include "util/AppConfig.h"
+#ifndef PICO_HID_APP_H
+#define PICO_HID_APP_H
+
+#include "pico/stdlib.h"
+#include "hardware/Led.h"
 
 namespace brunothg_pico_hid {
 
-    const std::string AppConfig::APP_NAME = "${app_NAME}";
-    const std::string AppConfig::APP_VERSION = "${app_VERSION}";
+    class App {
+    private:
+        LED statusLed;
 
-    /**
-     * GPIO definitions
-     */
-     const uint AppConfig::PIN_LED_STATUS = 18;
-    const uint AppConfig::PIN_LED_KEYBOARD = 15;
-    const uint AppConfig::PIN_LED_MOUSE = 10;
-    const uint AppConfig::PIN_LED_MOUSE_BUTTON = 8;
-    const uint AppConfig::PIN_BTN_KEYBOARD = 14;
-    const uint AppConfig::PIN_BTN_MOUSE = 12;
-    const uint AppConfig::PIN_BTN_MOUSE_BUTTON = 11;
-    const uint AppConfig::PIN_BTN_SPEED_UP = 7;
-    const uint AppConfig::PIN_BTN_SPEED_DOWN = 3;
+    public:
+        App();
+
+        /**
+         * Start method
+         * @return Return code
+         */
+        [[noreturn]] int run();
+    };
+
 }
+
+#endif //PICO_HID_APP_H

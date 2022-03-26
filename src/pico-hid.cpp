@@ -16,15 +16,10 @@
 * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#include <cstdio>
-#include "pico/stdlib.h"
-
+#include "App.h"
 
 int main()
 {
-    stdio_init_all();
-
-    puts("Hello, world!");
-
-    return 0;
+    brunothg_pico_hid::App app;
+    app.run();
 }

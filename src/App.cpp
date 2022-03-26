@@ -16,23 +16,31 @@
 * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+#include "App.h"
+
+#include <cstdio>
 #include "util/AppConfig.h"
 
 namespace brunothg_pico_hid {
 
-    const std::string AppConfig::APP_NAME = "${app_NAME}";
-    const std::string AppConfig::APP_VERSION = "${app_VERSION}";
+    App::App() : statusLed(AppConfig::PIN_LED_STATUS) {
+    }
 
-    /**
-     * GPIO definitions
-     */
-     const uint AppConfig::PIN_LED_STATUS = 18;
-    const uint AppConfig::PIN_LED_KEYBOARD = 15;
-    const uint AppConfig::PIN_LED_MOUSE = 10;
-    const uint AppConfig::PIN_LED_MOUSE_BUTTON = 8;
-    const uint AppConfig::PIN_BTN_KEYBOARD = 14;
-    const uint AppConfig::PIN_BTN_MOUSE = 12;
-    const uint AppConfig::PIN_BTN_MOUSE_BUTTON = 11;
-    const uint AppConfig::PIN_BTN_SPEED_UP = 7;
-    const uint AppConfig::PIN_BTN_SPEED_DOWN = 3;
+    [[noreturn]] int App::run() {
+        stdio_init_all();
+
+        puts((
+                     brunothg_pico_hid::AppConfig::APP_NAME + ": Version:" + brunothg_pico_hid::AppConfig::APP_VERSION
+             ).c_str());
+
+        statusLed.on();
+
+        while(true) {
+            sleep_ms(1000);
+        }
+
+    }
+
+
+
 }
