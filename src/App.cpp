@@ -47,7 +47,7 @@ namespace brunothg_pico_hid {
         Button btnDown(AppConfig::PIN_BTN_SPEED_DOWN);
 
         statusLed.on();
-        uint32_t waitTime = 1500;
+        uint32_t waitTime = 1750;
         while(true) {
             sleep_ms(waitTime);
             statusLed.toggle();
@@ -57,7 +57,7 @@ namespace brunothg_pico_hid {
             ledMouseBtn.setState(btnMouseBtn.isPressed());
 
             if(btnUp.isPressed()) {
-                waitTime = std::max(1000uL, waitTime - 100);
+                waitTime = std::max(500uL, waitTime - 100);
             }
             else if (btnDown.isPressed()) {
                 waitTime = std::min(waitTime - 100, 2000uL);

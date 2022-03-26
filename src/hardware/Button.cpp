@@ -17,21 +17,14 @@
 */
 
 #include "Button.h"
-#include <cstdio>
 
 namespace brunothg_pico_hid {
-
-    std::map<const uint, Button *> Button::irqHandlerMap;
 
     Button::Button(uint pin, int pullResistor) : pin{pin},
                                                  pullResistor{pullResistor},
                                                  state{false},
                                                  debounceTime{get_absolute_time()} {
         init();
-    }
-
-    Button::~Button() {
-        cleanup();
     }
 
     void Button::init() {
@@ -41,39 +34,16 @@ namespace brunothg_pico_hid {
         if (pullResistor == 2) gpio_pull_up(pin);
 
         debounceTime = get_absolute_time();
-        irqHandlerMap[pin] = this;
-        gpio_set_irq_enabled_with_callback(
-                pin,
-                GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL,
-                true,
-                Button::irqHandler
-        );
     }
 
-    void Button::cleanup() const {
-        gpio_set_irq_enabled(pin, GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL, false);
-        irqHandlerMap.erase(pin);
-    }
-
-    void Button::irqHandler(uint gpio, uint32_t events) {
+    bool Button::isPressed() {
         absolute_time_t timestamp = get_absolute_time();
-        auto btn = irqHandlerMap[gpio];
-        bool newState = (std::abs(btn->pullResistor) == 1) == ((events & GPIO_IRQ_EDGE_RISE) == GPIO_IRQ_EDGE_RISE);
-        bool debouncePassed = timestamp > delayed_by_ms(btn->debounceTime, 50);
-
-        puts((
-                     "Button IRQ: gpio->" + std::to_string(gpio) + " events->" + std::to_string(events)
-                     + " newState->" + std::to_string(newState)
-                     + " debounceTest->" + ((debouncePassed) ? "passes" : "failed")
-             ).c_str());
-
+        bool newState = (std::abs(pullResistor) == 1) == gpio_get(pin);
+        bool debouncePassed = timestamp > delayed_by_ms(debounceTime, 50);
         if (debouncePassed) {
-            btn->debounceTime = timestamp;
-            btn->state = newState;
+            state = newState;
         }
-    }
 
-    bool Button::isPressed() const {
         return state;
     }
 

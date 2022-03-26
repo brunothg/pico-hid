@@ -53,19 +53,14 @@ namespace brunothg_pico_hid {
          */
         void init();
 
-        /**
-         * Release hardware
-         */
-        void cleanup() const;
-
-        static std::map<const uint, Button*> irqHandlerMap;
-        static void irqHandler(uint gpio, uint32_t events);
-
     public:
         explicit Button(uint pin, int pullResistor = 2);
-        ~Button();
 
-        [[nodiscard]] bool isPressed() const;
+        /**
+         * Test, if the button ist pressed
+         * @return true, if the button is pressed, otherwise false
+         */
+        [[nodiscard]] bool isPressed();
     };
 
 }
