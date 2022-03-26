@@ -41,8 +41,6 @@ namespace brunothg_pico_hid {
         if (pullResistor == 2) gpio_pull_up(pin);
 
         debounceTime = get_absolute_time();
-        state = (std::abs(pullResistor) == 1) == gpio_get(pin);
-
         irqHandlerMap[pin] = this;
         gpio_set_irq_enabled_with_callback(
                 pin,
@@ -60,13 +58,16 @@ namespace brunothg_pico_hid {
     void Button::irqHandler(uint gpio, uint32_t events) {
         absolute_time_t timestamp = get_absolute_time();
         auto btn = irqHandlerMap[gpio];
-
         bool newState = (std::abs(btn->pullResistor) == 1) == ((events & GPIO_IRQ_EDGE_RISE) == GPIO_IRQ_EDGE_RISE);
+        bool debouncePassed = timestamp > delayed_by_ms(btn->debounceTime, 50);
+
         puts((
                      "Button IRQ: gpio->" + std::to_string(gpio) + " events->" + std::to_string(events)
                      + " newState->" + std::to_string(newState)
+                     + " debounceTest->" + ((debouncePassed) ? "passes" : "failed")
              ).c_str());
-        if (timestamp > delayed_by_ms(btn->debounceTime, 50)) {
+
+        if (debouncePassed) {
             btn->debounceTime = timestamp;
             btn->state = newState;
         }
