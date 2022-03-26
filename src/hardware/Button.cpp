@@ -64,7 +64,7 @@ namespace brunothg_pico_hid {
         bool newState = (std::abs(btn->pullResistor) == 1) == ((events & GPIO_IRQ_EDGE_RISE) == GPIO_IRQ_EDGE_RISE);
         puts((
                      "Button IRQ: gpio->" + std::to_string(gpio) + " events->" + std::to_string(events)
-                     + " "
+                     + " newState->" + std::to_string(newState)
              ).c_str());
         if (timestamp > delayed_by_ms(btn->debounceTime, 50)) {
             btn->debounceTime = timestamp;
