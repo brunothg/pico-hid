@@ -17,11 +17,11 @@
 */
 
 #include "Button.h"
-#include <functional>
+#include <cstdio>
 
 namespace brunothg_pico_hid {
 
-    std::map<const uint, Button*> Button::irqHandlerMap;
+    std::map<const uint, Button *> Button::irqHandlerMap;
 
     Button::Button(uint pin, int pullResistor) : pin{pin},
                                                  pullResistor{pullResistor},
@@ -41,7 +41,7 @@ namespace brunothg_pico_hid {
         if (pullResistor == 2) gpio_pull_up(pin);
 
         debounceTime = get_absolute_time();
-        state = (std::abs(pullResistor) == 1) ? gpio_get(pin) : !gpio_get(pin);
+        state = (std::abs(pullResistor) == 1) == gpio_get(pin);
 
         irqHandlerMap[pin] = this;
         gpio_set_irq_enabled_with_callback(
@@ -61,10 +61,14 @@ namespace brunothg_pico_hid {
         absolute_time_t timestamp = get_absolute_time();
         auto btn = irqHandlerMap[gpio];
 
-        bool newState = (events & GPIO_IRQ_EDGE_RISE) == GPIO_IRQ_EDGE_RISE;
+        bool newState = (std::abs(btn->pullResistor) == 1) == ((events & GPIO_IRQ_EDGE_RISE) == GPIO_IRQ_EDGE_RISE);
+        puts((
+                     "Button IRQ: gpio->" + std::to_string(gpio) + " events->" + std::to_string(events)
+                     + " "
+             ).c_str());
         if (timestamp > delayed_by_ms(btn->debounceTime, 50)) {
             btn->debounceTime = timestamp;
-            btn->state = (std::abs(btn->pullResistor) == 1) ? newState : !newState;
+            btn->state = newState;
         }
     }
 
