@@ -30,6 +30,10 @@ namespace brunothg_pico_hid {
     }
 
     void Led::setState(bool newState) {
+        if (state == newState) {
+            return;
+        }
+
         state = newState;
         gpio_put(pin, state);
     }
