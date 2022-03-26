@@ -64,7 +64,7 @@ namespace brunothg_pico_hid {
         bool newState = (events & GPIO_IRQ_EDGE_RISE) == GPIO_IRQ_EDGE_RISE;
         if (timestamp > delayed_by_ms(btn->debounceTime, 50)) {
             btn->debounceTime = timestamp;
-            btn->state = newState;
+            btn->state = (std::abs(btn->pullResistor) == 1) ? newState : !newState;
         }
     }
 
