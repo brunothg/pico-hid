@@ -20,29 +20,33 @@
 
 namespace brunothg_pico_hid {
 
-    LED::LED(uint pin, bool state) : pin{pin}, state{state} {
+    Led::Led(uint pin, bool state) : pin{pin}, state{state} {
         init();
     }
 
-    void LED::init() const {
+    void Led::init() const {
         gpio_init(pin);
         gpio_set_dir(pin, GPIO_OUT);
     }
 
-    void LED::setState(bool newState) {
+    void Led::setState(bool newState) {
         state = newState;
         gpio_put(pin, state);
     }
 
-    bool LED::getState() {
+    bool Led::getState() {
         return state;
     }
 
-    void LED::on() {
+    void Led::on() {
         setState(true);
     }
 
-    void LED::off() {
+    void Led::off() {
         setState(false);
+    }
+
+    void Led::toggle() {
+        setState(!state);
     }
 }

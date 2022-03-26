@@ -20,6 +20,7 @@
 
 #include <cstdio>
 #include "util/AppConfig.h"
+#include "hardware/Button.h"
 
 namespace brunothg_pico_hid {
 
@@ -33,10 +34,33 @@ namespace brunothg_pico_hid {
                      brunothg_pico_hid::AppConfig::APP_NAME + ": Version:" + brunothg_pico_hid::AppConfig::APP_VERSION
              ).c_str());
 
-        statusLed.on();
+        Button btnKeyboard(AppConfig::PIN_BTN_KEYBOARD);
+        Led ledKeyboard(AppConfig::PIN_LED_KEYBOARD);
 
+        Button btnMouse(AppConfig::PIN_BTN_MOUSE);
+        Led ledMouse(AppConfig::PIN_LED_MOUSE);
+
+        Button btnMouseBtn(AppConfig::PIN_BTN_MOUSE_BUTTON);
+        Led ledMouseBtn(AppConfig::PIN_LED_MOUSE_BUTTON);
+
+        Button btnUp(AppConfig::PIN_BTN_SPEED_UP);
+        Button btnDown(AppConfig::PIN_BTN_SPEED_DOWN);
+
+        statusLed.on();
+        uint32_t waitTime = 1000;
         while(true) {
-            sleep_ms(1000);
+            sleep_ms(waitTime);
+            statusLed.toggle();
+
+            ledKeyboard.setState(btnKeyboard.isPressed());
+            ledMouse.setState(btnMouse.isPressed());
+            ledMouseBtn.setState(btnMouseBtn.isPressed());
+
+            if(btnUp.isPressed()) {
+                waitTime = std::max(waitTime + 100, 2000uL);
+            } else if (btnDown.isPressed()) {
+                waitTime = std::min(0uL, waitTime - 100);
+            }
         }
 
     }

@@ -26,7 +26,7 @@ namespace brunothg_pico_hid {
 
     class App {
     private:
-        LED statusLed;
+        Led statusLed;
 
     public:
         App();

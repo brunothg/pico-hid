@@ -16,61 +16,58 @@
 * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef PICO_HID_LED_H
-#define PICO_HID_LED_H
+#ifndef PICO_HID_BUTTON_H
+#define PICO_HID_BUTTON_H
 
 #include "pico/stdlib.h"
+#include <map>
 
 namespace brunothg_pico_hid {
 
-    class Led {
+    class Button {
     private:
         /**
-         * LED GPIO pin nr
+         * Button GPIO pin nr
          */
         const uint pin;
 
         /**
-         * ON=true, OFF=false
+         * Pull-down or pull-up resistor state.
+         * 1=internal-pull-down, 2=internal-pull-up
+         * , -1=external-pull-down, 2=external-pull-up.
+         */
+         const int pullResistor;
+
+        /**
+         * Pressed=true, Released=false
          */
         bool state;
 
         /**
+         * Timestamp used for debouncing
+         */
+        absolute_time_t debounceTime;
+
+        /**
          * Initialize hardware
          */
-        void init() const;
+        void init();
+
+        /**
+         * Release hardware
+         */
+        void cleanup() const;
+
+        static std::map<const uint, Button*> irqHandlerMap;
+        static void irqHandler(uint gpio, uint32_t events);
 
     public:
-        explicit Led(uint pin, bool state = false);
+        explicit Button(uint pin, int pullResistor = 2);
+        ~Button();
 
-        /**
-         * Set the LED state (ON=true, OFF=false)
-         * @param newState The new LED state
-         */
-        void setState(bool newState);
-
-        /**
-         * Get the LED state
-         * @return true if the LED state is ON otherwise false
-         */
-        bool getState();
-
-        /**
-         * Turn LED on
-         */
-        void on();
-
-        /**
-         * Turn LED off
-         */
-        void off();
-
-        /**
-         * Switch LED state
-         */
-        void toggle();
+        [[nodiscard]] bool isPressed() const;
     };
 
 }
 
-#endif //PICO_HID_LED_H
+#endif //PICO_HID_BUTTON_H

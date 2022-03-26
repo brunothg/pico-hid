@@ -26,7 +26,7 @@ namespace brunothg_pico_hid {
     /**
      * GPIO definitions
      */
-     const uint AppConfig::PIN_LED_STATUS = 18;
+    const uint AppConfig::PIN_LED_STATUS = 18;
     const uint AppConfig::PIN_LED_KEYBOARD = 15;
     const uint AppConfig::PIN_LED_MOUSE = 10;
     const uint AppConfig::PIN_LED_MOUSE_BUTTON = 8;
