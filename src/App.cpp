@@ -57,9 +57,9 @@ namespace brunothg_pico_hid {
             ledMouseBtn.setState(btnMouseBtn.isPressed());
 
             if(btnUp.isPressed()) {
-                waitTime = std::max(waitTime + 100, 2000uL);
+                waitTime = std::min(waitTime + 100, 2000uL);
             } else if (btnDown.isPressed()) {
-                waitTime = std::min(0uL, waitTime - 100);
+                waitTime = std::max(0uL, waitTime - 100);
             }
         }
 
