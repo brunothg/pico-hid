@@ -16,8 +16,11 @@
 
 cmake_minimum_required(VERSION 3.13)
 
+# build app config
+configure_file(${CMAKE_CURRENT_LIST_DIR}/AppConfig.in.cpp AppConfig.cpp)
+
+# source files
 target_sources(pico-hid
-	PRIVATE
-	${CMAKE_CURRENT_LIST_DIR}/pico-hid.cpp
-	)
-add_subdirectory(util)
+        PRIVATE
+        ${CMAKE_CURRENT_BINARY_DIR}/AppConfig.cpp
+        )

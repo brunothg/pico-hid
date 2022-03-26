@@ -31,3 +31,6 @@ cmake-build-*/
 
 # Editor-based Rest Client
 .idea/httpRequests
+
+# Editor Serial Monitor
+/.idea/serialmonitor_settings.xml

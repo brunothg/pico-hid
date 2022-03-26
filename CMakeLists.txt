@@ -38,7 +38,7 @@ pico_sdk_init()
 
 # Add executable. Default name is the project name
 add_executable(pico-hid "")
-target_include_directories(pico-hid PRIVATE .)
+target_include_directories(pico-hid PRIVATE src)
 
 pico_set_program_name(pico-hid "pico-hid")
 pico_set_program_version(pico-hid "1.0.0")
@@ -58,3 +58,7 @@ add_subdirectory(src)
 # Print flag infos
 message("C_FLAGS: ${CMAKE_C_FLAGS}")
 message("CXX_FLAGS: ${CMAKE_CXX_FLAGS}")
+
+# app config
+set(app_NAME "${CMAKE_PROJECT_NAME}")
+set(app_VERSION "${pico-hid_VERSION_MAJOR}.${pico-hid_VERSION_MINOR}.${pico-hid_VERSION_PATCH}")
