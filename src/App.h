@@ -20,6 +20,7 @@
 #define PICO_HID_APP_H
 
 #include "hardware/Led.h"
+#include "hardware/Button.h"
 
 namespace brunothg_pico_hid {
 
