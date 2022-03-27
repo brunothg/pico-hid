@@ -30,6 +30,9 @@ namespace brunothg_pico_hid {
      * @author Marvin Bruns
      */
     class AppConfig {
+    private:
+        static std::string boardId;
+
     public:
         /**
          * The name of this app

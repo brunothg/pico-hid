@@ -25,7 +25,6 @@
 
 #include "tusb.h"
 #include "tusb_descriptors.h"
-#include "pico/unique_id.h"
 #include "util/AppConfig.h"
 
 #ifdef __cplusplus
@@ -187,7 +186,7 @@ uint8_t const *tud_descriptor_configuration_cb(uint8_t index) {
 // String Descriptors
 //--------------------------------------------------------------------+
 
-const auto tusb_desc_device_serial = brunothg_pico_hid::AppConfig::getBoardId();
+const std::string tusb_desc_device_serial = brunothg_pico_hid::AppConfig::getBoardId();
 
 // array of pointer to string descriptors
 char const *string_desc_arr[] =

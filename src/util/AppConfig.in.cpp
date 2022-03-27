@@ -17,6 +17,8 @@
 */
 
 #include "util/AppConfig.h"
+#include <cstring>
+#include "pico/unique_id.h"
 
 namespace brunothg_pico_hid {
 
@@ -44,9 +46,18 @@ namespace brunothg_pico_hid {
     const std::string AppConfig::USB_MANUFACTURER_NAME = "${APP_USB_MANUFACTURER_NAME}";
     const std::string AppConfig::USB_PRODUCT_NAME = "${APP_USB_PRODUCT_NAME}";
 
+    std::string AppConfig::boardId;
+
     std::string AppConfig::getBoardId() {
-        // TODO getBoardId
-        return "123456";
+        if (boardId.empty()) {
+            pico_unique_board_id_t picoUniqueBoardId;
+            pico_get_unique_board_id(&picoUniqueBoardId);
+            uint64_t boardIdNumber = 0;
+            std::memcpy(&boardIdNumber, picoUniqueBoardId.id, 8);
+            boardId = std::to_string(boardIdNumber);
+        }
+
+        return boardId;
     }
 
 }

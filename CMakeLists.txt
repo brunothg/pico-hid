@@ -73,8 +73,8 @@ set(APP_GPIO_PIN_BTN_SPEED_UP 7)
 set(APP_GPIO_PIN_BTN_SPEED_DOWN 3)
 
 # USB config
-set(APP_USB_VID 0x1209) # TODO replace test USB VID
-set(APP_USB_PID 0x0001) # TODO replace test USB PID
+set(APP_USB_VID 0x1209) # TODO replace test USB VID (0=auto test only)
+set(APP_USB_PID 0x0001) # TODO replace test USB PID (0=auto)
 set(APP_USB_MANUFACTURER_NAME "NOT YOUR BUSINESS")
 set(APP_USB_PRODUCT_NAME "PICO HID")
 
