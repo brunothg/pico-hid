@@ -49,7 +49,7 @@ pico_enable_stdio_uart(pico-hid 1)
 pico_enable_stdio_usb(pico-hid 0)
 
 # Add libraries to the build
-target_link_libraries(pico-hid PUBLIC pico_stdlib tinyusb_device tinyusb_board)
+target_link_libraries(pico-hid PUBLIC pico_stdlib pico_unique_id tinyusb_device tinyusb_board)
 
 pico_add_extra_outputs(pico-hid)
 
@@ -71,6 +71,12 @@ set(APP_GPIO_PIN_BTN_MOUSE 12)
 set(APP_GPIO_PIN_BTN_MOUSE_BUTTON 11)
 set(APP_GPIO_PIN_BTN_SPEED_UP 7)
 set(APP_GPIO_PIN_BTN_SPEED_DOWN 3)
+
+# USB config
+set(APP_USB_VID 0x1209) # TODO replace test USB VID
+set(APP_USB_PID 0x0001) # TODO replace test USB PID
+set(APP_USB_MANUFACTURER_NAME "NOT YOUR BUSINESS")
+set(APP_USB_PRODUCT_NAME "PICO HID")
 
 # add directories
 add_subdirectory(src)

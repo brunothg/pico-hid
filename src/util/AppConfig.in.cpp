@@ -23,7 +23,7 @@ namespace brunothg_pico_hid {
     const std::string AppConfig::APP_NAME = "${APP_NAME}";
     const std::string AppConfig::APP_VERSION = "${APP_VERSION}";
 
-    /**
+    /*
      * GPIO definitions
      */
     const uint AppConfig::PIN_LED_STATUS = ${APP_GPIO_PIN_LED_STATUS};
@@ -35,4 +35,18 @@ namespace brunothg_pico_hid {
     const uint AppConfig::PIN_BTN_MOUSE_BUTTON = ${APP_GPIO_PIN_BTN_MOUSE_BUTTON};
     const uint AppConfig::PIN_BTN_SPEED_UP = ${APP_GPIO_PIN_BTN_SPEED_UP};
     const uint AppConfig::PIN_BTN_SPEED_DOWN = ${APP_GPIO_PIN_BTN_SPEED_DOWN};
+
+    /*
+     * USB configurations
+     */
+    const uint16_t AppConfig::USB_VID = ${APP_USB_VID};
+    const uint16_t AppConfig::USB_PID = ${APP_USB_PID};
+    const std::string AppConfig::USB_MANUFACTURER_NAME = "${APP_USB_MANUFACTURER_NAME}";
+    const std::string AppConfig::USB_PRODUCT_NAME = "${APP_USB_PRODUCT_NAME}";
+
+    std::string AppConfig::getBoardId() {
+        // TODO getBoardId
+        return "123456";
+    }
+
 }

@@ -31,7 +31,8 @@ namespace brunothg_pico_hid {
         stdio_init_all();
 
         puts((
-                     brunothg_pico_hid::AppConfig::APP_NAME + ": Version:" + brunothg_pico_hid::AppConfig::APP_VERSION
+                     brunothg_pico_hid::AppConfig::APP_NAME + "(" + AppConfig::getBoardId() + ")"
+                     + ": Version:" + brunothg_pico_hid::AppConfig::APP_VERSION
              ).c_str());
 
         Button btnKeyboard(AppConfig::PIN_BTN_KEYBOARD);

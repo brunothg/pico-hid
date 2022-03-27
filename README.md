@@ -17,7 +17,7 @@ The following dependencies must be installed (see dependencies.sh):
 You can or have to configure some app properties (see CMakeLists.txt):
 
 - GPIO-Pin numbers for buttons and LEDs (required)
-- USB VID/PID (vendor/product id) (required for real world use; optional for testing)
+- USB VID/PID (vendor/product id), manufacturer and product name, serial (required for real world use; optional for testing)
 
 # Build
 

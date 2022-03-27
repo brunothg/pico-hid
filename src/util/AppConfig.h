@@ -86,6 +86,33 @@ namespace brunothg_pico_hid {
          */
         static const uint PIN_BTN_SPEED_DOWN;
 
+        /**
+         * USB vendor id (0 for auto mode - test only)
+         */
+        static const uint16_t USB_VID;
+
+        /**
+        * USB product id (0 for auto mode)
+        */
+        static const uint16_t USB_PID;
+
+        /**
+         * USB manufacturer name
+         */
+        static const std::string USB_MANUFACTURER_NAME;
+
+        /**
+         * USB product name
+         */
+        static const std::string USB_PRODUCT_NAME;
+
+        /**
+         * Get the board id as string
+         * @see pico_get_unique_board_id_string
+         * @return The board id
+         */
+        static std::string getBoardId();
+
     };
 
 }

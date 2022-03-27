@@ -19,5 +19,5 @@ cmake_minimum_required(VERSION 3.13)
 # source files
 target_sources(pico-hid
         PRIVATE
-        ${CMAKE_CURRENT_LIST_DIR}/tusb_descriptors.c
+        ${CMAKE_CURRENT_LIST_DIR}/tusb_descriptors.cpp
         )
