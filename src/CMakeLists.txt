@@ -23,3 +23,4 @@ target_sources(pico-hid
 	)
 add_subdirectory(util)
 add_subdirectory(hardware)
+add_subdirectory(tusb)

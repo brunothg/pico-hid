@@ -26,7 +26,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 # Pull in Raspberry Pi Pico SDK (must be before project)
 include(pico_sdk_import.cmake)
 
-project(pico-hid C CXX ASM)
+project(pico-hid VERSION 1.0.0 LANGUAGES C CXX ASM )
 
 # Enable C++ Exceptions (1=on, 0=off)
 set(PICO_CXX_ENABLE_EXCEPTIONS 1)
@@ -39,26 +39,38 @@ pico_sdk_init()
 # Add executable. Default name is the project name
 add_executable(pico-hid "")
 target_include_directories(pico-hid PRIVATE src)
+target_include_directories(pico-hid PUBLIC src/tusb)
 
-pico_set_program_name(pico-hid "pico-hid")
-pico_set_program_version(pico-hid "1.0.0")
+pico_set_program_name(pico-hid "${CMAKE_PROJECT_NAME}")
+pico_set_program_version(pico-hid "${pico-hid_VERSION_MAJOR}.${pico-hid_VERSION_MINOR}.${pico-hid_VERSION_PATCH}")
 
 # Set console output to UART, USB or none
 pico_enable_stdio_uart(pico-hid 1)
 pico_enable_stdio_usb(pico-hid 0)
 
 # Add libraries to the build
-target_link_libraries(pico-hid pico_stdlib)
+target_link_libraries(pico-hid PUBLIC pico_stdlib tinyusb_device tinyusb_board)
 
 pico_add_extra_outputs(pico-hid)
-
-# add directories
-add_subdirectory(src)
 
 # Print flag infos
 message("C_FLAGS: ${CMAKE_C_FLAGS}")
 message("CXX_FLAGS: ${CMAKE_CXX_FLAGS}")
 
-# app config
-set(app_NAME "${CMAKE_PROJECT_NAME}")
-set(app_VERSION "${pico-hid_VERSION_MAJOR}.${pico-hid_VERSION_MINOR}.${pico-hid_VERSION_PATCH}")
+# App config
+set(APP_NAME "${CMAKE_PROJECT_NAME}")
+set(APP_VERSION "${pico-hid_VERSION_MAJOR}.${pico-hid_VERSION_MINOR}.${pico-hid_VERSION_PATCH}")
+
+# GPIO config
+set(APP_GPIO_PIN_LED_STATUS 18)
+set(APP_GPIO_PIN_LED_KEYBOARD 15)
+set(APP_GPIO_PIN_LED_MOUSE 10)
+set(APP_GPIO_PIN_LED_MOUSE_BUTTON 8)
+set(APP_GPIO_PIN_BTN_KEYBOARD 14)
+set(APP_GPIO_PIN_BTN_MOUSE 12)
+set(APP_GPIO_PIN_BTN_MOUSE_BUTTON 11)
+set(APP_GPIO_PIN_BTN_SPEED_UP 7)
+set(APP_GPIO_PIN_BTN_SPEED_DOWN 3)
+
+# add directories
+add_subdirectory(src)
