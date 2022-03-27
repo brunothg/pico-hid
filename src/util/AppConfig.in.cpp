@@ -17,8 +17,9 @@
 */
 
 #include "util/AppConfig.h"
+
 #include <cstring>
-#include "pico/unique_id.h"
+#include <pico/unique_id.h>
 
 namespace brunothg_pico_hid {
 

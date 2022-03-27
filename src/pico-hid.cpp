@@ -16,10 +16,18 @@
 * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+#include <bsp/board.h>
+#include <pico/stdlib.h>
+#include <tusb.h>
+
 #include "App.h"
 
 int main()
 {
+    stdio_init_all();
+    board_init();
+    tusb_init();
+
     brunothg_pico_hid::App app;
     app.run();
 }

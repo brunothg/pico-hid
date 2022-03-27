@@ -19,7 +19,7 @@
 #ifndef PICO_HID_LED_H
 #define PICO_HID_LED_H
 
-#include "pico/stdlib.h"
+#include <pico/stdlib.h>
 
 namespace brunothg_pico_hid {
 

@@ -19,7 +19,7 @@
 #ifndef PICO_HID_BUTTON_H
 #define PICO_HID_BUTTON_H
 
-#include "pico/stdlib.h"
+#include <pico/stdlib.h>
 #include <map>
 
 namespace brunothg_pico_hid {

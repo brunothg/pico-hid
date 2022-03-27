@@ -19,7 +19,6 @@
 #ifndef PICO_HID_APP_H
 #define PICO_HID_APP_H
 
-#include "pico/stdlib.h"
 #include "hardware/Led.h"
 
 namespace brunothg_pico_hid {

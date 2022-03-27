@@ -20,7 +20,7 @@
 #define PICO_HID_APPCONFIG_H
 
 #include <string>
-#include "pico/stdlib.h"
+#include <pico/stdlib.h>
 
 namespace brunothg_pico_hid {
 

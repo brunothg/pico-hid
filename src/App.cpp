@@ -28,7 +28,6 @@ namespace brunothg_pico_hid {
     }
 
     [[noreturn]] int App::run() {
-        stdio_init_all();
 
         puts((
                      brunothg_pico_hid::AppConfig::APP_NAME + "(" + AppConfig::getBoardId() + ")"
