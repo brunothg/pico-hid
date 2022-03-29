@@ -23,4 +23,6 @@ configure_file(AppConfig.in.cpp AppConfig.cpp)
 target_sources(pico-hid
         PRIVATE
         ${CMAKE_CURRENT_BINARY_DIR}/AppConfig.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/EventListener.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/EventDispatcher.cpp
         )
