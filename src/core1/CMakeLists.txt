@@ -19,4 +19,7 @@ cmake_minimum_required(VERSION 3.13)
 target_sources(pico-hid
 	PRIVATE
 	${CMAKE_CURRENT_LIST_DIR}/Core1.cpp
+	${CMAKE_CURRENT_LIST_DIR}/AbstractTask.cpp
+	${CMAKE_CURRENT_LIST_DIR}/KeyboardTask.cpp
+	${CMAKE_CURRENT_LIST_DIR}/MouseTask.cpp
 	)

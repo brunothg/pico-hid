@@ -18,38 +18,61 @@
 
 #include "Core1.h"
 
-#include <pico/stdlib.h>
-#include "HID.h"
 #include "hardware/Button.h"
 #include "hardware/Led.h"
 #include "util/AppConfig.h"
+#include "core1/KeyboardTask.h"
+#include "core1/MouseTask.h"
 
 namespace brunothg_pico_hid {
 
     [[noreturn]] void Core1::run() {
-        auto &hid = HID::getInstance();
-        Button btn(AppConfig::PIN_BTN_KEYBOARD);
-        Led led(AppConfig::PIN_LED_KEYBOARD);
+        Button btnKeyboard(AppConfig::PIN_BTN_KEYBOARD);
+        Led ledKeyboard(AppConfig::PIN_LED_KEYBOARD);
+        Button btnMouse(AppConfig::PIN_BTN_MOUSE);
+        Led ledMouse(AppConfig::PIN_LED_MOUSE);
+        Button btnMouseBtn(AppConfig::PIN_BTN_MOUSE_BUTTON);
+        Led ledMouseBtn(AppConfig::PIN_LED_MOUSE_BUTTON);
+        Button btnSpeedUp(AppConfig::PIN_BTN_SPEED_UP);
+        Button btnSpeedDown(AppConfig::PIN_BTN_SPEED_DOWN);
 
-        absolute_time_t hidTimestamp = get_absolute_time();
+        KeyboardTask keyboard;
+        MouseTask mouse;
+
         while(true) {
 
-            if (get_absolute_time() >= delayed_by_ms(hidTimestamp, 100)) {
-                hidTimestamp = get_absolute_time();
-
-                led.setState(btn.isPressed());
-                if (btn.isPressed()) {
-                    std::shared_ptr<HIDTask> mouseTask = std::make_shared<HIDMouseTask>(0x00, 5, 5, 0, 0);
-
-                    std::vector<uint8_t> keycode{HID_KEY_A, 0, 0, 0, 0, 0};
-                    std::shared_ptr<HIDTask> keyboardATask = std::make_shared<HIDKeyboardTask>(0, keycode);
-                    std::shared_ptr<HIDTask> keyboardNullTask = std::make_shared<HIDKeyboardTask>(0);
-
-                    hid.scheduleHidTasks({mouseTask, keyboardATask, keyboardNullTask});
-                }
+            // Check speed change
+            if (btnSpeedUp.isClicked()) {
+                keyboard.changeSpeed(+1);
+                mouse.changeSpeed(+1);
+            }
+            if (btnSpeedDown.isClicked()) {
+                keyboard.changeSpeed(-1);
+                mouse.changeSpeed(-1);
             }
 
+            // Check keyboard task
+            if (btnKeyboard.isClicked()) {
+                ledKeyboard.toggle();
+            }
+            keyboard.setKeysEnabled(ledKeyboard.getState());
+
+            // Check mouse task
+            if (btnMouse.isClicked()) {
+                ledMouse.toggle();
+            }
+            mouse.setMovementEnabled(ledMouse.getState());
+
+            // Check mouse button task
+            if (btnMouseBtn.isClicked()) {
+                ledMouseBtn.toggle();
+            }
+            mouse.setButtonsEnabled(ledMouseBtn.getState());
+
+            keyboard.run();
+            mouse.run();
+
         }
-        // TODO core 1
+
     }
 }
