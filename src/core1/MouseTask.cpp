@@ -58,10 +58,9 @@ namespace brunothg_pico_hid {
         }
         auto &hid = HID::getInstance();
 
-        if (get_absolute_time() >= delayed_by_ms(runTimestamp, std::max(10, (int) (AppConfig::HID_SPEED_LEVEL_COUNT *
-                                                                                   AppConfig::HID_SPEED_LEVEL_MS) -
-                                                                            (int) (AppConfig::HID_SPEED_LEVEL_MS *
-                                                                                   getSpeed())))) {
+        if (get_absolute_time() >=
+            delayed_by_ms(runTimestamp, std::max(10, (int) (getMaxSpeedLevel() * AppConfig::HID_SPEED_LEVEL_MS) -
+                                                     (int) (AppConfig::HID_SPEED_LEVEL_MS * getSpeedLevel())))) {
             runTimestamp = get_absolute_time();
 
             if (movementEnabled) {

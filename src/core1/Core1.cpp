@@ -40,8 +40,7 @@ namespace brunothg_pico_hid {
         MouseTask mouse;
 
         int speed = 0;
-        const uint maxSpeed = AppConfig::HID_SPEED_LEVEL_COUNT / 2;
-        const uint speedLevelMs = AppConfig::HID_SPEED_LEVEL_MS;
+        const int maxSpeed = (int)(AppConfig::HID_SPEED_LEVEL_COUNT / 2);
         absolute_time_t speedTimestamp = get_absolute_time();
 
         while (true) {
@@ -49,13 +48,13 @@ namespace brunothg_pico_hid {
             // Check speed change
             if (btnSpeedUp.isClicked() && speed < maxSpeed) {
                 speed++;
-                keyboard.changeSpeed(+1);
-                mouse.changeSpeed(+1);
+                keyboard.changeSpeedLevel(+1);
+                mouse.changeSpeedLevel(+1);
             }
             if (btnSpeedDown.isClicked() && speed > -maxSpeed) {
                 speed--;
-                keyboard.changeSpeed(-1);
-                mouse.changeSpeed(-1);
+                keyboard.changeSpeedLevel(-1);
+                mouse.changeSpeedLevel(-1);
             }
 
             // Check keyboard task
