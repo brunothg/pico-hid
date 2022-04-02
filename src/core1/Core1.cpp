@@ -59,13 +59,11 @@ namespace brunothg_pico_hid {
             // Check keyboard task
             if (btnKeyboard.isClicked()) {
                 keyboard.toggleKeysEnabled();
-                ledKeyboard.toggle();
             }
 
             // Check mouse task
             if (btnMouse.isClicked()) {
                 mouse.toggleMovementEnabled();
-                ledMouse.toggle();
             }
 
             // Check mouse button task

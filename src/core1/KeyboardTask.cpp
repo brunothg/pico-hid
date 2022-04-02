@@ -18,6 +18,7 @@
 
 #include "KeyboardTask.h"
 
+#include <cmath>
 #include "HID.h"
 
 namespace brunothg_pico_hid {
@@ -43,7 +44,7 @@ namespace brunothg_pico_hid {
         }
         auto &hid = HID::getInstance();
 
-        if (get_absolute_time() >= delayed_by_ms(runTimestamp, 1000 - (100 * getSpeed()))) {
+        if (get_absolute_time() >= delayed_by_ms(runTimestamp, std::max(10, 1000 - (100 * getSpeed())))) {
             runTimestamp = get_absolute_time();
 
             std::vector<uint8_t> keycode{HID_KEY_A, 0, 0, 0, 0, 0};
