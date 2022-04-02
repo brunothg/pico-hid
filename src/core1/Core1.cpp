@@ -39,35 +39,47 @@ namespace brunothg_pico_hid {
         KeyboardTask keyboard;
         MouseTask mouse;
 
+        int speed = 0;
+        absolute_time_t speedTimestamp = get_absolute_time();
+
         while(true) {
 
             // Check speed change
-            if (btnSpeedUp.isClicked()) {
+            if (btnSpeedUp.isClicked() && speed < 10) {
+                speed++;
                 keyboard.changeSpeed(+1);
                 mouse.changeSpeed(+1);
             }
-            if (btnSpeedDown.isClicked()) {
+            if (btnSpeedDown.isClicked() && speed > -10) {
+                speed--;
                 keyboard.changeSpeed(-1);
                 mouse.changeSpeed(-1);
             }
 
             // Check keyboard task
             if (btnKeyboard.isClicked()) {
+                keyboard.toggleKeysEnabled();
                 ledKeyboard.toggle();
             }
-            keyboard.setKeysEnabled(ledKeyboard.getState());
 
             // Check mouse task
             if (btnMouse.isClicked()) {
+                mouse.toggleMovementEnabled();
                 ledMouse.toggle();
             }
-            mouse.setMovementEnabled(ledMouse.getState());
 
             // Check mouse button task
             if (btnMouseBtn.isClicked()) {
-                ledMouseBtn.toggle();
+                mouse.toggleButtonsEnabled();
             }
-            mouse.setButtonsEnabled(ledMouseBtn.getState());
+
+            if (get_absolute_time() >= delayed_by_ms(speedTimestamp, 1500 - (100 * speed))) {
+                speedTimestamp = get_absolute_time();
+
+                ledKeyboard.setState(keyboard.isKeysEnabled() && !ledKeyboard.getState());
+                ledMouse.setState(mouse.isMovementEnabled() && !ledMouse.getState());
+                ledMouseBtn.setState(mouse.isButtonsEnabled() && !ledMouseBtn.getState());
+            }
 
             keyboard.run();
             mouse.run();

@@ -30,8 +30,24 @@ namespace brunothg_pico_hid {
         movementEnabled = enabled;
     }
 
+    void MouseTask::toggleMovementEnabled() {
+        setMovementEnabled(!isMovementEnabled());
+    }
+
+    bool MouseTask::isMovementEnabled() const {
+        return movementEnabled;
+    }
+
     void MouseTask::setButtonsEnabled(bool enabled) {
         buttonsEnabled = enabled;
+    }
+
+    void MouseTask::toggleButtonsEnabled() {
+        setButtonsEnabled(!isButtonsEnabled());
+    }
+
+    bool MouseTask::isButtonsEnabled() const {
+        return buttonsEnabled;
     }
 
     void MouseTask::run() {

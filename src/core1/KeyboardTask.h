@@ -34,6 +34,10 @@ namespace brunothg_pico_hid {
 
         void setKeysEnabled(bool enabled);
 
+        void toggleKeysEnabled();
+
+        [[nodiscard]] bool isKeysEnabled() const;
+
         void run() override;
     };
 

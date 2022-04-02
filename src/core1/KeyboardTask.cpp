@@ -22,11 +22,19 @@
 
 namespace brunothg_pico_hid {
 
-    KeyboardTask::KeyboardTask(): keysEnabled(false), runTimestamp{get_absolute_time()} {
+    KeyboardTask::KeyboardTask() : keysEnabled(false), runTimestamp{get_absolute_time()} {
     }
 
     void KeyboardTask::setKeysEnabled(bool enabled) {
         keysEnabled = enabled;
+    }
+
+    void KeyboardTask::toggleKeysEnabled() {
+        setKeysEnabled(!isKeysEnabled());
+    }
+
+    bool KeyboardTask::isKeysEnabled() const {
+        return keysEnabled;
     }
 
     void KeyboardTask::run() {
@@ -47,5 +55,6 @@ namespace brunothg_pico_hid {
 
         // TODO run keyboard
     }
+
 
 }
