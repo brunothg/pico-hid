@@ -61,7 +61,7 @@ namespace brunothg_pico_hid {
     }
 
     void HID::remoteWakeup() const {
-        if (isRemoteWakeupEnabled()) {
+        if (getState() == Suspended && isRemoteWakeupEnabled()) {
             tud_remote_wakeup();
         }
     }
@@ -84,7 +84,7 @@ namespace brunothg_pico_hid {
     }
 
     void HID::runNextHidTask() {
-        if (hidTaskRunning) {
+        if (hidTaskRunning || getState() != Mount) {
             return;
         }
 

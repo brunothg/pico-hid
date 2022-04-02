@@ -172,7 +172,7 @@ namespace brunothg_pico_hid {
         [[nodiscard]] bool isHidTaskRunning() const;
 
         /**
-         * Wakeup host if possible
+         * Wakeup host if possible (state=suspended and isRemoteWakeupEnabled=true)
          */
         void remoteWakeup() const;
 

@@ -16,34 +16,33 @@
 * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+#include "Core0.h"
+
 #include <pico/stdlib.h>
-#include <pico/multicore.h>
-#include <bsp/board.h>
-#include <tusb.h>
-
+#include "HID.h"
+#include "hardware/Led.h"
 #include "util/AppConfig.h"
-#include "core0/Core0.h"
-#include "core1/Core1.h"
 
-void core0_func() {
-    board_init();
-    tusb_init();
+namespace brunothg_pico_hid {
 
-    brunothg_pico_hid::Core0::run();
-}
+    [[noreturn]] void Core0::run() {
+        auto &hid = HID::getInstance();
+        Led statusLed(AppConfig::PIN_LED_STATUS, true);
 
-void core1_func() {
-    brunothg_pico_hid::Core1::run();
-}
+        absolute_time_t statusTimestamp = get_absolute_time();
+        while (true) {
+            // TUSB task
+            hid.task();
+            hid.remoteWakeup();
 
-int main() {
-    stdio_init_all();
+            // Status-LED task
+            auto usbState = hid.getState();
+            if (get_absolute_time() >=
+                delayed_by_ms(statusTimestamp, (usbState == Unmount) ? 250 : ((usbState == Mount) ? 1000 : 2500))) {
+                statusTimestamp = get_absolute_time();
+                statusLed.toggle();
+            }
+        }
+    }
 
-    puts((
-                 brunothg_pico_hid::AppConfig::APP_NAME + "(" + brunothg_pico_hid::AppConfig::getBoardId() + ")"
-                 + ": Version:" + brunothg_pico_hid::AppConfig::APP_VERSION
-         ).c_str());
-
-    multicore_launch_core1(core1_func);
-    core0_func();
 }

@@ -49,7 +49,7 @@ pico_enable_stdio_uart(pico-hid 1)
 pico_enable_stdio_usb(pico-hid 0)
 
 # Add libraries to the build
-target_link_libraries(pico-hid PUBLIC pico_stdlib pico_unique_id tinyusb_device tinyusb_board)
+target_link_libraries(pico-hid PUBLIC pico_stdlib pico_unique_id pico_multicore tinyusb_device tinyusb_board)
 
 pico_add_extra_outputs(pico-hid)
 

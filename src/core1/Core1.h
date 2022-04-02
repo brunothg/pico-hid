@@ -16,28 +16,16 @@
 * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef PICO_HID_APP_H
-#define PICO_HID_APP_H
-
-#include "hardware/Led.h"
-#include "hardware/Button.h"
+#ifndef PICO_HID_CORE1_H
+#define PICO_HID_CORE1_H
 
 namespace brunothg_pico_hid {
 
-    class App {
-    private:
-        Led statusLed;
-
+    class Core1 {
     public:
-        App();
-
-        /**
-         * Start method
-         * @return Return code
-         */
-        [[noreturn]] int run();
+        [[noreturn]] static void run();
     };
 
 }
 
-#endif //PICO_HID_APP_H
+#endif //PICO_HID_CORE1_H

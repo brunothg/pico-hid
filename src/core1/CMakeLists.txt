@@ -18,10 +18,5 @@ cmake_minimum_required(VERSION 3.13)
 
 target_sources(pico-hid
 	PRIVATE
-	${CMAKE_CURRENT_LIST_DIR}/pico-hid.cpp
+	${CMAKE_CURRENT_LIST_DIR}/Core1.cpp
 	)
-add_subdirectory(util)
-add_subdirectory(hardware)
-add_subdirectory(tusb)
-add_subdirectory(core0)
-add_subdirectory(core1)

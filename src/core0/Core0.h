@@ -16,34 +16,16 @@
 * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#include <pico/stdlib.h>
-#include <pico/multicore.h>
-#include <bsp/board.h>
-#include <tusb.h>
+#ifndef PICO_HID_CORE0_H
+#define PICO_HID_CORE0_H
 
-#include "util/AppConfig.h"
-#include "core0/Core0.h"
-#include "core1/Core1.h"
+namespace brunothg_pico_hid {
 
-void core0_func() {
-    board_init();
-    tusb_init();
+    class Core0 {
+    public:
+        [[noreturn]] static void run();
+    };
 
-    brunothg_pico_hid::Core0::run();
 }
 
-void core1_func() {
-    brunothg_pico_hid::Core1::run();
-}
-
-int main() {
-    stdio_init_all();
-
-    puts((
-                 brunothg_pico_hid::AppConfig::APP_NAME + "(" + brunothg_pico_hid::AppConfig::getBoardId() + ")"
-                 + ": Version:" + brunothg_pico_hid::AppConfig::APP_VERSION
-         ).c_str());
-
-    multicore_launch_core1(core1_func);
-    core0_func();
-}
+#endif //PICO_HID_CORE0_H
