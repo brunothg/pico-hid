@@ -20,6 +20,7 @@
 
 #include <cmath>
 #include "HID.h"
+#include "util/AppConfig.h"
 
 namespace brunothg_pico_hid {
 
@@ -57,7 +58,10 @@ namespace brunothg_pico_hid {
         }
         auto &hid = HID::getInstance();
 
-        if (get_absolute_time() >= delayed_by_ms(runTimestamp, std::max(10, 1000 - (100 * getSpeed())))) {
+        if (get_absolute_time() >= delayed_by_ms(runTimestamp, std::max(10, (int) (AppConfig::HID_SPEED_LEVEL_COUNT *
+                                                                                   AppConfig::HID_SPEED_LEVEL_MS) -
+                                                                            (int) (AppConfig::HID_SPEED_LEVEL_MS *
+                                                                                   getSpeed())))) {
             runTimestamp = get_absolute_time();
 
             if (movementEnabled) {
@@ -66,7 +70,8 @@ namespace brunothg_pico_hid {
             }
 
             if (buttonsEnabled) {
-                std::shared_ptr<HIDTask> mouseClickTask = std::make_shared<HIDMouseTask>(MOUSE_BUTTON_RIGHT, 0, 0, 0, 0);
+                std::shared_ptr<HIDTask> mouseClickTask = std::make_shared<HIDMouseTask>(MOUSE_BUTTON_RIGHT, 0, 0, 0,
+                                                                                         0);
                 std::shared_ptr<HIDTask> mouseReleaseTask = std::make_shared<HIDMouseTask>(0x00, 0, 0, 0, 0);
                 hid.scheduleHidTasks({mouseClickTask, mouseReleaseTask});
             }

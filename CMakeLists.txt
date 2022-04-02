@@ -78,5 +78,9 @@ set(APP_USB_PID 0x0001) # TODO replace test USB PID (0=auto)
 set(APP_USB_MANUFACTURER_NAME "NOT YOUR BUSINESS")
 set(APP_USB_PRODUCT_NAME "PICO HID")
 
+# HID config
+set(APP_HID_SPEED_LEVEL_COUNT 20)
+set(APP_HID_SPEED_LEVEL_MS 100)
+
 # add directories
 add_subdirectory(src)

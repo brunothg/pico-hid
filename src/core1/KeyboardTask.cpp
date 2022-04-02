@@ -20,6 +20,7 @@
 
 #include <cmath>
 #include "HID.h"
+#include "util/AppConfig.h"
 
 namespace brunothg_pico_hid {
 
@@ -44,7 +45,10 @@ namespace brunothg_pico_hid {
         }
         auto &hid = HID::getInstance();
 
-        if (get_absolute_time() >= delayed_by_ms(runTimestamp, std::max(10, 1000 - (100 * getSpeed())))) {
+        if (get_absolute_time() >= delayed_by_ms(runTimestamp, std::max(10, (int) (AppConfig::HID_SPEED_LEVEL_COUNT *
+                                                                                   AppConfig::HID_SPEED_LEVEL_MS) -
+                                                                            (int) (AppConfig::HID_SPEED_LEVEL_MS *
+                                                                                   getSpeed())))) {
             runTimestamp = get_absolute_time();
 
             std::vector<uint8_t> keycode{HID_KEY_A, 0, 0, 0, 0, 0};

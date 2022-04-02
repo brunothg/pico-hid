@@ -40,17 +40,19 @@ namespace brunothg_pico_hid {
         MouseTask mouse;
 
         int speed = 0;
+        const uint maxSpeed = AppConfig::HID_SPEED_LEVEL_COUNT / 2;
+        const uint speedLevelMs = AppConfig::HID_SPEED_LEVEL_MS;
         absolute_time_t speedTimestamp = get_absolute_time();
 
-        while(true) {
+        while (true) {
 
             // Check speed change
-            if (btnSpeedUp.isClicked() && speed < 10) {
+            if (btnSpeedUp.isClicked() && speed < maxSpeed) {
                 speed++;
                 keyboard.changeSpeed(+1);
                 mouse.changeSpeed(+1);
             }
-            if (btnSpeedDown.isClicked() && speed > -10) {
+            if (btnSpeedDown.isClicked() && speed > -maxSpeed) {
                 speed--;
                 keyboard.changeSpeed(-1);
                 mouse.changeSpeed(-1);
@@ -71,7 +73,7 @@ namespace brunothg_pico_hid {
                 mouse.toggleButtonsEnabled();
             }
 
-            if (get_absolute_time() >= delayed_by_ms(speedTimestamp, 1500 - (100 * speed))) {
+            if (get_absolute_time() >= delayed_by_ms(speedTimestamp, ((maxSpeed * 100) + 500) - (100 * speed))) {
                 speedTimestamp = get_absolute_time();
 
                 ledKeyboard.setState(keyboard.isKeysEnabled() && !ledKeyboard.getState());

@@ -45,6 +45,16 @@ namespace brunothg_pico_hid {
         static const std::string APP_VERSION;
 
         /**
+         * Number of supported speed levels
+         */
+        static const uint HID_SPEED_LEVEL_COUNT;
+
+        /**
+         * Speed level in ms
+         */
+        static const uint HID_SPEED_LEVEL_MS;
+
+        /**
          * The main status LED pin nr
          */
         static const uint PIN_LED_STATUS;
