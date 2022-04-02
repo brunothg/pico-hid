@@ -21,4 +21,6 @@ target_sources(pico-hid
         PRIVATE
         ${CMAKE_CURRENT_LIST_DIR}/tusb_descriptors.cpp
         ${CMAKE_CURRENT_LIST_DIR}/HID.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/HIDEvents.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/HIDTasks.cpp
         )

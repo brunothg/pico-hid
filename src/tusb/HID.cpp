@@ -16,28 +16,29 @@
 * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+#include <cstdarg>
 #include "HID.h"
 
-#include <tusb.h>
-#include <bsp/board.h>
-#include "tusb_descriptors.h"
+#include "HIDEvents.h"
 
 namespace brunothg_pico_hid {
 
-    StateChangeEvent::StateChangeEvent(TUSB_State oldState, TUSB_State newState): oldState{oldState}, newState{newState} {
+    HID::HID() : state{Unmount}, hidTaskRunning{false}, remoteWakeupEnabled{false}, hidTaskSection() {
+        critical_section_init(&hidTaskSection);
     }
 
-    HID::HID() : state{Unmount} {
+    HID::~HID() {
+        critical_section_deinit(&hidTaskSection);
     }
 
-    void HID::setState(TUSB_State newState) {
+    void HID::setState(TUsbConnectionState newState) {
         auto oldState = state;
         state = newState;
 
-        dispatchEvent(StateChangeEvent(oldState, newState));
+        dispatchEvent(TUsbStateChangeEvent(oldState, newState));
     }
 
-    TUSB_State HID::getState() const {
+    TUsbConnectionState HID::getState() const {
         return state;
     }
 
@@ -49,44 +50,142 @@ namespace brunothg_pico_hid {
         return remoteWakeupEnabled;
     }
 
-    extern "C" {
+    void HID::onReportCompleted(uint8_t instance, const uint8_t *report, uint8_t len) {
+        hidTaskRunning = false;
+        dispatchEvent(TUsbReportCompleteEvent(instance, report, len));
+    }
 
-    //--------------------------------------------------------------------+
-    // Device callbacks
-    //--------------------------------------------------------------------+
+    void HID::onSetReport(uint8_t instance, uint8_t report_id, hid_report_type_t report_type, const uint8_t *buffer,
+                          uint16_t bufsize) {
+        dispatchEvent(TUsbSetReportEvent(instance, report_id, report_type, buffer, bufsize));
+    }
 
-    // Invoked when device is mounted
-    void tud_mount_cb(void) {
+    void HID::remoteWakeup() const {
+        if (isRemoteWakeupEnabled()) {
+            tud_remote_wakeup();
+        }
+    }
+
+    void HID::task() {
+        tud_task();
+        runNextHidTask();
+    }
+
+    bool HID::isHidTaskRunning() const {
+        return hidTaskRunning;
+    }
+
+    void HID::scheduleHidTasks(std::initializer_list<std::shared_ptr<HIDTask>> va_hidTasks) {
+        critical_section_enter_blocking(&hidTaskSection);
+        for (const auto &hidTask: va_hidTasks) {
+            hidTasks.push(hidTask);
+        }
+        critical_section_exit(&hidTaskSection);
+    }
+
+    void HID::runNextHidTask() {
+        if (hidTaskRunning) {
+            return;
+        }
+
+        std::shared_ptr<HIDTask> nextHidTask;
+        critical_section_enter_blocking(&hidTaskSection);
+        if (!hidTasks.empty()) {
+            nextHidTask = hidTasks.front();
+            hidTasks.pop();
+        }
+        critical_section_exit(&hidTaskSection);
+
+        if (nextHidTask != nullptr) {
+            hidTaskRunning = true;
+            nextHidTask->task();
+        }
+    }
+
+    void tud_mount_cb_HID() {
         HID &hid = HID::getInstance();
         hid.setState(Mount);
     }
 
-    // Invoked when device is unmounted
-    void tud_umount_cb(void) {
+    void tud_umount_cb_HID() {
         HID &hid = HID::getInstance();
         hid.setState(Unmount);
     }
 
-    // Invoked when usb bus is suspended
-    // remote_wakeup_en : if host allow us  to perform remote wakeup
-    // Within 7ms, device must draw an average of current less than 2.5 mA from bus
-    void tud_suspend_cb(bool remote_wakeup_en) {
+    void tud_suspend_cb_HID(bool remote_wakeup_en) {
         HID &hid = HID::getInstance();
         hid.setRemoteWakeupEnabled(remote_wakeup_en);
         hid.setState(Suspended);
     }
 
-    // Invoked when usb bus is resumed
-    void tud_resume_cb(void) {
+    void tud_resume_cb_HID() {
         HID &hid = HID::getInstance();
         hid.setState(Mount);
     }
 
-    //--------------------------------------------------------------------+
-    // USB HID
-    //--------------------------------------------------------------------+
+    uint16_t tud_hid_get_report_cb_HID(uint8_t instance, uint8_t report_id, hid_report_type_t report_type,
+                                       uint8_t *buffer, uint16_t reqlen) {
+        // TODO not Implemented: tud_hid_get_report_cb
+        (void) instance;
+        (void) report_id;
+        (void) report_type;
+        (void) buffer;
+        (void) reqlen;
 
-
+        return 0;
     }
+
+    void tud_hid_report_complete_cb_HID(uint8_t instance, uint8_t const *report, uint8_t len) {
+        HID &hid = HID::getInstance();
+        hid.onReportCompleted(instance, report, len);
+    }
+
+    void tud_hid_set_report_cb_HID(uint8_t instance, uint8_t report_id, hid_report_type_t report_type,
+                                   uint8_t const *buffer, uint16_t bufsize) {
+        HID &hid = HID::getInstance();
+        hid.onSetReport(instance, report_id, report_type, buffer, bufsize);
+    }
+
+}
+
+extern "C" {
+
+//--------------------------------------------------------------------+
+// Device callbacks
+//--------------------------------------------------------------------+
+
+void tud_mount_cb() {
+    brunothg_pico_hid::tud_mount_cb_HID();
+}
+
+void tud_umount_cb() {
+    brunothg_pico_hid::tud_umount_cb_HID();
+}
+
+void tud_suspend_cb(bool remote_wakeup_en) {
+    brunothg_pico_hid::tud_suspend_cb_HID(remote_wakeup_en);
+}
+
+void tud_resume_cb(void) {
+    brunothg_pico_hid::tud_resume_cb_HID();
+}
+
+//--------------------------------------------------------------------+
+// USB HID
+//--------------------------------------------------------------------+
+
+uint16_t tud_hid_get_report_cb(uint8_t instance, uint8_t report_id, hid_report_type_t report_type, uint8_t *buffer,
+                               uint16_t reqlen) {
+    return brunothg_pico_hid::tud_hid_get_report_cb_HID(instance, report_id, report_type, buffer, reqlen);
+}
+
+void tud_hid_report_complete_cb(uint8_t instance, uint8_t const *report, uint8_t len) {
+    brunothg_pico_hid::tud_hid_report_complete_cb_HID(instance, report, len);
+}
+
+void tud_hid_set_report_cb(uint8_t instance, uint8_t report_id, hid_report_type_t report_type, uint8_t const *buffer,
+                           uint16_t bufsize) {
+    brunothg_pico_hid::tud_hid_set_report_cb_HID(instance, report_id, report_type, buffer, bufsize);
+}
 
 }

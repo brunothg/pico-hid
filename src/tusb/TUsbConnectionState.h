@@ -16,18 +16,20 @@
 * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef PICO_HID_EVENT_H
-#define PICO_HID_EVENT_H
+#ifndef PICO_HID_TUSBCONNECTIONSTATE_H
+#define PICO_HID_TUSBCONNECTIONSTATE_H
 
 namespace brunothg_pico_hid {
 
-    class Event {
-    protected:
-        Event() = default;
-    public:
-        virtual ~Event() = default;
+    /**
+     * TinyUsb connection states
+     */
+    enum TUsbConnectionState {
+        Unmount,
+        Mount,
+        Suspended
     };
 
 }
 
-#endif //PICO_HID_EVENT_H
+#endif //PICO_HID_TUSBCONNECTIONSTATE_H

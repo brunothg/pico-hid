@@ -1,6 +1,7 @@
 # pico-hid
 
-Raspberry Pi Pico HID-Device
+Raspberry Pi Pico HID-Device.  
+This project can be found here: [GitHub](https://github.com/brunothg/pico-hid)
 
 # Dependencies
 
