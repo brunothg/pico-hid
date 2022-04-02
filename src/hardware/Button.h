@@ -57,10 +57,17 @@ namespace brunothg_pico_hid {
         explicit Button(uint pin, int pullResistor = 2);
 
         /**
-         * Test, if the button ist pressed
+         * Test, if the button is pressed
          * @return true, if the button is pressed, otherwise false
          */
         [[nodiscard]] bool isPressed();
+
+        /**
+         * Test, if the button was clicked (pressed and released) since last test
+         * @return true, if the button was clicked, otherwise false
+         */
+        [[nodiscard]] bool isClicked();
+
     };
 
 }

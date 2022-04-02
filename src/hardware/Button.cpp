@@ -41,10 +41,18 @@ namespace brunothg_pico_hid {
         bool newState = (std::abs(pullResistor) == 1) == gpio_get(pin);
         bool debouncePassed = timestamp > delayed_by_ms(debounceTime, 50);
         if (debouncePassed) {
+            debounceTime = timestamp;
             state = newState;
         }
 
         return state;
+    }
+
+    bool Button::isClicked() {
+        bool previousState = state;
+        bool newState = isPressed();
+
+        return previousState && !newState;
     }
 
 }
