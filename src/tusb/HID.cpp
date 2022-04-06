@@ -75,12 +75,17 @@ namespace brunothg_pico_hid {
         return hidTaskRunning;
     }
 
-    void HID::scheduleHidTasks(std::initializer_list<std::shared_ptr<HIDTask>> va_hidTasks) {
+    int HID::scheduleHidTasks(std::initializer_list<std::shared_ptr<HIDTask>> va_hidTasks) {
+        int successCount = 0;
         critical_section_enter_blocking(&hidTaskSection);
         for (const auto &hidTask: va_hidTasks) {
-            hidTasks.push(hidTask);
+            if (hidTasks.size() < 1500) {
+                hidTasks.push(hidTask);
+                successCount++;
+            }
         }
         critical_section_exit(&hidTaskSection);
+        return successCount;
     }
 
     void HID::runNextHidTask() {

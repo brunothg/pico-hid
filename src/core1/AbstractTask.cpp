@@ -17,6 +17,8 @@
 */
 
 #include "AbstractTask.h"
+
+#include <cmath>
 #include "util/AppConfig.h"
 
 namespace brunothg_pico_hid {
@@ -40,6 +42,15 @@ namespace brunothg_pico_hid {
     void AbstractTask::setSpeedLevel(int speedLevel) {
         const int maxLevel = getMaxSpeedLevel();
         speed = std::max(-maxLevel, std::min(speedLevel, maxLevel));
+    }
+
+    uint32_t AbstractTask::calculateBaseDelay() const {
+        return std::max(10, (int) (getMaxSpeedLevel() * AppConfig::HID_SPEED_LEVEL_MS) -
+                            (int) (AppConfig::HID_SPEED_LEVEL_MS * getSpeedLevel()));
+    }
+
+    uint32_t AbstractTask::calculateRandomisedDelay() const {
+        return calculateBaseDelay() + (uint32_t) std::floor(100.0 * ((double) rand() / RAND_MAX));
     }
 
 }

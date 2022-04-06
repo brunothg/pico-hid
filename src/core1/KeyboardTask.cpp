@@ -44,11 +44,10 @@ namespace brunothg_pico_hid {
             return;
         }
         auto &hid = HID::getInstance();
+        const absolute_time_t timestamp = get_absolute_time();
 
-        if (get_absolute_time() >=
-            delayed_by_ms(runTimestamp, std::max(10, (int) (getMaxSpeedLevel() * AppConfig::HID_SPEED_LEVEL_MS) -
-                                                     (int) (AppConfig::HID_SPEED_LEVEL_MS * getSpeedLevel())))) {
-            runTimestamp = get_absolute_time();
+        if (timestamp >= runTimestamp) {
+            runTimestamp = delayed_by_ms(timestamp,calculateRandomisedDelay());
 
             std::vector<uint8_t> keycode{HID_KEY_A};
             std::shared_ptr<HIDTask> keyboardATask = std::make_shared<HIDKeyboardTask>(0, keycode);

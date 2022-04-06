@@ -24,7 +24,8 @@
 
 namespace brunothg_pico_hid {
 
-    MouseTask::MouseTask() : buttonsEnabled{false}, movementEnabled{false}, runTimestamp{get_absolute_time()} {
+    MouseTask::MouseTask() : buttonsEnabled{false}, movementEnabled{false}, runTimestampMovement{get_absolute_time()},
+                             runTimestampClick{get_absolute_time()} {
 
     }
 
@@ -57,25 +58,41 @@ namespace brunothg_pico_hid {
             return;
         }
         auto &hid = HID::getInstance();
+        const absolute_time_t timestamp = get_absolute_time();
 
-        if (get_absolute_time() >=
-            delayed_by_ms(runTimestamp, std::max(10, (int) (getMaxSpeedLevel() * AppConfig::HID_SPEED_LEVEL_MS) -
-                                                     (int) (AppConfig::HID_SPEED_LEVEL_MS * getSpeedLevel())))) {
-            runTimestamp = get_absolute_time();
+        if (movementEnabled && timestamp > runTimestampMovement) {
+            runTimestampMovement = delayed_by_ms(timestamp, calculateRandomisedDelay());
 
-            if (movementEnabled) {
-                std::shared_ptr<HIDTask> mouseMoveTask = std::make_shared<HIDMouseTask>(0x00, 5, 5, 0, 0);
-                hid.scheduleHidTask(mouseMoveTask);
+            if (targetX == posX && targetY == posY) {
+                calculateNewTarget();
             }
 
-            if (buttonsEnabled) {
-                std::shared_ptr<HIDTask> mouseClickTask = std::make_shared<HIDMouseTask>(MOUSE_BUTTON_RIGHT, 0, 0, 0,
-                                                                                         0);
-                std::shared_ptr<HIDTask> mouseReleaseTask = std::make_shared<HIDMouseTask>(0x00, 0, 0, 0, 0);
-                hid.scheduleHidTasks({mouseClickTask, mouseReleaseTask});
+            int dx = (targetX == posX) ? 0 : ((targetX > posX) ? 1 : -1);
+            int dy = (targetY == posY) ? 0 : ((targetY > posY) ? 1 : -1);
+
+            std::shared_ptr<HIDTask> mouseMoveTask = std::make_shared<HIDMouseTask>(0x00, dx, dy, 0, 0);
+            auto success = hid.scheduleHidTask(mouseMoveTask);
+            if (success) {
+                posX += dx;
+                posY += dy;
             }
         }
-        // TODO run mouse
+
+        if (buttonsEnabled && timestamp > runTimestampClick) {
+            runTimestampClick = delayed_by_ms(timestamp, calculateRandomisedDelay());
+
+            // TODO run mouse click
+            std::shared_ptr<HIDTask> mouseClickTask = std::make_shared<HIDMouseTask>(MOUSE_BUTTON_RIGHT, 0, 0, 0,
+                                                                                     0);
+            std::shared_ptr<HIDTask> mouseReleaseTask = std::make_shared<HIDMouseTask>(0x00, 0, 0, 0, 0);
+            hid.scheduleHidTasks({mouseClickTask, mouseReleaseTask});
+        }
+
+    }
+
+    void MouseTask::calculateNewTarget() {
+        targetX = (uint32_t) std::floor(800.0 * ((double) rand() / RAND_MAX));
+        targetY = (uint32_t) std::floor(600.0 * ((double) rand() / RAND_MAX));
     }
 
 }
