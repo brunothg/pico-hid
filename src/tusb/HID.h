@@ -129,7 +129,7 @@ namespace brunothg_pico_hid {
         /**
          * Size limit for queued HID tasks
          */
-        const size_t hidTasksLimit = 1500;
+        const size_t hidTasksLimit = 500;
 
         /**
          * Sync section for HID tasks

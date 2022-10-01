@@ -43,6 +43,7 @@ namespace brunothg_pico_hid {
         auto keycode = HID_KEY_A + (uint8_t) std::floor((HID_KEY_SPACE - HID_KEY_A) * ((double) rand() / RAND_MAX));
         switch (keycode) {
             case HID_KEY_ESCAPE:
+            case HID_KEY_TAB:
                 keycode = HID_KEY_SPACE;
                 break;
         }
