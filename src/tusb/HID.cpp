@@ -78,16 +78,18 @@ namespace brunothg_pico_hid {
         int successCount = 0;
 
         critical_section_enter_blocking(&hidTaskSection);
-        auto remainingSize = HID::hidTasksLimit - hidTasks.size();
-        if (remainingSize >= va_hidTasks.size() || partial) {
-            for (const auto &hidTask: va_hidTasks) {
-                if (remainingSize > 0) {
-                    hidTasks.push(hidTask);
-                    remainingSize--;
-                    successCount++;
+        try {
+            auto remainingSize = HID::hidTasksLimit - hidTasks.size();
+            if (remainingSize >= va_hidTasks.size() || partial) {
+                for (const auto &hidTask: va_hidTasks) {
+                    if (remainingSize > 0) {
+                        hidTasks.push(hidTask);
+                        remainingSize--;
+                        successCount++;
+                    }
                 }
             }
-        }
+        } catch (...) {}
         critical_section_exit(&hidTaskSection);
 
         return successCount;
@@ -100,15 +102,19 @@ namespace brunothg_pico_hid {
 
         std::shared_ptr<HIDTask> nextHidTask;
         critical_section_enter_blocking(&hidTaskSection);
-        if (!hidTasks.empty()) {
-            nextHidTask = hidTasks.front();
-            hidTasks.pop();
-        }
+        try {
+            if (!hidTasks.empty()) {
+                nextHidTask = hidTasks.front();
+                hidTasks.pop();
+            }
+        } catch (...) {}
         critical_section_exit(&hidTaskSection);
 
         if (nextHidTask != nullptr) {
-            hidTaskRunning = true;
-            nextHidTask->task();
+            try {
+                nextHidTask->task();
+                hidTaskRunning = true;
+            } catch (...) {}
         }
     }
 

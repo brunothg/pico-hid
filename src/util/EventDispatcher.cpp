@@ -23,9 +23,9 @@
 namespace brunothg_pico_hid {
 
     EventDispatcher::~EventDispatcher() {
-        std::vector<EventListener*> tmpListeners(listeners);
+        std::vector<EventListener *> tmpListeners(listeners);
         listeners.clear();
-        for (auto listener : tmpListeners) {
+        for (auto listener: tmpListeners) {
             removeEventListener(listener);
         }
     }
@@ -45,8 +45,10 @@ namespace brunothg_pico_hid {
     }
 
     void EventDispatcher::dispatchEvent(const Event &event) const {
-        for(auto listener: listeners){
-            listener->onEvent(event);
+        for (auto listener: listeners) {
+            try {
+                listener->onEvent(event);
+            } catch (...) {}
         }
     }
 }
