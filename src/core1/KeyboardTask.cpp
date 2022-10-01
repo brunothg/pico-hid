@@ -40,7 +40,14 @@ namespace brunothg_pico_hid {
     }
 
     uint8_t calculateRandomKeyCode() {
-        return HID_KEY_A + (uint8_t) std::floor((HID_KEY_Z - HID_KEY_A) * ((double) rand() / RAND_MAX));
+        auto keycode = HID_KEY_A + (uint8_t) std::floor((HID_KEY_SPACE - HID_KEY_A) * ((double) rand() / RAND_MAX));
+        switch (keycode) {
+            case HID_KEY_ESCAPE:
+                keycode = HID_KEY_SPACE;
+                break;
+        }
+
+        return keycode;
     }
 
     void KeyboardTask::run() {
