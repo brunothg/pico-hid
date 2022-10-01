@@ -26,7 +26,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 # Pull in Raspberry Pi Pico SDK (must be before project)
 include(pico_sdk_import.cmake)
 
-project(pico-hid VERSION 1.0.0 LANGUAGES C CXX ASM )
+project(pico-hid VERSION 1.0.1 LANGUAGES C CXX ASM )
 
 # Enable C++ Exceptions (1=on, 0=off)
 set(PICO_CXX_ENABLE_EXCEPTIONS 1)
