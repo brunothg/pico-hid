@@ -17,16 +17,38 @@
 */
 
 #include "KeyboardTask.h"
+#include <cmath>
 
 #include "HID.h"
+#include "util/AppConfig.h"
 
 namespace brunothg_pico_hid {
 
-    KeyboardTask::KeyboardTask(): keysEnabled(false), runTimestamp{get_absolute_time()} {
+    KeyboardTask::KeyboardTask() : keysEnabled(false), runTimestamp{get_absolute_time()} {
     }
 
     void KeyboardTask::setKeysEnabled(bool enabled) {
         keysEnabled = enabled;
+    }
+
+    void KeyboardTask::toggleKeysEnabled() {
+        setKeysEnabled(!isKeysEnabled());
+    }
+
+    bool KeyboardTask::isKeysEnabled() const {
+        return keysEnabled;
+    }
+
+    uint8_t calculateRandomKeyCode() {
+        auto keycode = HID_KEY_A + (uint8_t) std::floor((HID_KEY_SPACE - HID_KEY_A) * ((double) rand() / RAND_MAX));
+        switch (keycode) {
+            case HID_KEY_ESCAPE:
+            case HID_KEY_TAB:
+                keycode = HID_KEY_SPACE;
+                break;
+        }
+
+        return keycode;
     }
 
     void KeyboardTask::run() {
@@ -34,18 +56,19 @@ namespace brunothg_pico_hid {
             return;
         }
         auto &hid = HID::getInstance();
+        const absolute_time_t timestamp = get_absolute_time();
 
-        if (get_absolute_time() >= delayed_by_ms(runTimestamp, 1000 - (100 * getSpeed()))) {
-            runTimestamp = get_absolute_time();
+        if (timestamp >= runTimestamp) {
+            runTimestamp = delayed_by_ms(timestamp,calculateRandomisedDelay());
 
-            std::vector<uint8_t> keycode{HID_KEY_A, 0, 0, 0, 0, 0};
+            std::vector<uint8_t> keycode{calculateRandomKeyCode()};
             std::shared_ptr<HIDTask> keyboardATask = std::make_shared<HIDKeyboardTask>(0, keycode);
             std::shared_ptr<HIDTask> keyboardNullTask = std::make_shared<HIDKeyboardTask>(0);
 
             hid.scheduleHidTasks({keyboardATask, keyboardNullTask});
         }
 
-        // TODO run keyboard
     }
+
 
 }

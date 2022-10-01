@@ -19,18 +19,29 @@
 #ifndef PICO_HID_ABSTRACTTASK_H
 #define PICO_HID_ABSTRACTTASK_H
 
+#include <pico/stdlib.h>
+
 namespace brunothg_pico_hid {
 
     class AbstractTask {
     private:
         int speed;
+
+    protected:
+        [[nodiscard]] uint32_t calculateBaseDelay() const;
+        [[nodiscard]] uint32_t calculateRandomisedDelay() const;
+
     public:
         AbstractTask();
         virtual ~AbstractTask() = default;
 
-        [[nodiscard]] int getSpeed() const;
+        [[nodiscard]] int getMaxSpeedLevel() const;
 
-        void changeSpeed(int delta);
+        [[nodiscard]] int getSpeedLevel() const;
+
+        void setSpeedLevel(int speedLevel);
+
+        void changeSpeedLevel(int delta);
 
         virtual void run() = 0;
     };

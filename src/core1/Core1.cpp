@@ -39,35 +39,50 @@ namespace brunothg_pico_hid {
         KeyboardTask keyboard;
         MouseTask mouse;
 
-        while(true) {
+        int speed = 0;
+        const int maxSpeed = (int) (AppConfig::HID_SPEED_LEVEL_COUNT / 2);
+        absolute_time_t speedTimestamp = get_absolute_time();
+
+        while (true) {
+            const absolute_time_t timestamp = get_absolute_time();
 
             // Check speed change
-            if (btnSpeedUp.isClicked()) {
-                keyboard.changeSpeed(+1);
-                mouse.changeSpeed(+1);
+            if (btnSpeedUp.isClicked() && speed < maxSpeed) {
+                speed++;
+                keyboard.changeSpeedLevel(+1);
+                mouse.changeSpeedLevel(+1);
             }
-            if (btnSpeedDown.isClicked()) {
-                keyboard.changeSpeed(-1);
-                mouse.changeSpeed(-1);
+            if (btnSpeedDown.isClicked() && speed > -maxSpeed) {
+                speed--;
+                keyboard.changeSpeedLevel(-1);
+                mouse.changeSpeedLevel(-1);
             }
 
             // Check keyboard task
             if (btnKeyboard.isClicked()) {
-                ledKeyboard.toggle();
+                srand(timestamp);
+                keyboard.toggleKeysEnabled();
             }
-            keyboard.setKeysEnabled(ledKeyboard.getState());
 
             // Check mouse task
             if (btnMouse.isClicked()) {
-                ledMouse.toggle();
+                srand(timestamp);
+                mouse.toggleMovementEnabled();
             }
-            mouse.setMovementEnabled(ledMouse.getState());
 
             // Check mouse button task
             if (btnMouseBtn.isClicked()) {
-                ledMouseBtn.toggle();
+                srand(timestamp);
+                mouse.toggleButtonsEnabled();
             }
-            mouse.setButtonsEnabled(ledMouseBtn.getState());
+
+            if (timestamp >= speedTimestamp) {
+                speedTimestamp = delayed_by_ms(timestamp, ((maxSpeed * 100) + 500) - (100 * speed));
+
+                ledKeyboard.setState(keyboard.isKeysEnabled() && !ledKeyboard.getState());
+                ledMouse.setState(mouse.isMovementEnabled() && !ledMouse.getState());
+                ledMouseBtn.setState(mouse.isButtonsEnabled() && !ledMouseBtn.getState());
+            }
 
             keyboard.run();
             mouse.run();

@@ -23,6 +23,7 @@ You can or have to configure some app properties (see CMakeLists.txt):
 # Build
 
 If everything is set up correctly, it should be as easy as running the `build.sh` script.
+Now the *.uf2 file can be installed on the Raspberry Pi Pico.
 
 # Circuit
 

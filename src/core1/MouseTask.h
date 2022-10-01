@@ -28,13 +28,29 @@ namespace brunothg_pico_hid {
     private:
         bool movementEnabled;
         bool buttonsEnabled;
-        absolute_time_t runTimestamp;
+        absolute_time_t runTimestampMovement;
+        absolute_time_t runTimestampClick;
+        uint32_t posX = 0;
+        uint32_t posY = 0;
+        uint32_t targetX = 0;
+        uint32_t targetY = 0;
+
+        void calculateNewTarget();
 
     public:
         MouseTask();
 
         void setMovementEnabled(bool enabled);
+
+        void toggleMovementEnabled();
+
+        [[nodiscard]] bool isMovementEnabled() const;
+
         void setButtonsEnabled(bool enabled);
+
+        void toggleButtonsEnabled();
+
+        [[nodiscard]] bool isButtonsEnabled() const;
 
         void run() override;
     };

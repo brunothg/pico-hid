@@ -46,7 +46,7 @@ namespace brunothg_pico_hid {
             uint8_t keycodeArray[6] = {0};
             int index = 0;
             for (auto keyc: keycode) {
-                keycodeArray[index] = keyc;
+                if (index < 6) keycodeArray[index] = keyc;
                 index++;
             }
             tud_hid_keyboard_report(REPORT_ID_KEYBOARD, modifier, keycodeArray);

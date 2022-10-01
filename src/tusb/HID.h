@@ -127,6 +127,11 @@ namespace brunothg_pico_hid {
         std::queue<std::shared_ptr<HIDTask>> hidTasks;
 
         /**
+         * Size limit for queued HID tasks
+         */
+        const size_t hidTasksLimit = 500;
+
+        /**
          * Sync section for HID tasks
          * @see hidTasks
          */
@@ -179,14 +184,17 @@ namespace brunothg_pico_hid {
         /**
          * Schedule HID task (thread safe)
          * @param va_hidTasks HID tasks that should be scheduled
+         * @param partial If false, only all or none can be scheduled
+         * @return number of successfully scheduled tasks
          */
-        void scheduleHidTasks(std::initializer_list<std::shared_ptr<HIDTask>> va_hidTasks);
+        int scheduleHidTasks(std::initializer_list<std::shared_ptr<HIDTask>> va_hidTasks, bool partial = false);
 
         /**
          * @see scheduleHidTask(std::initializer_list<std::shared_ptr<HIDTask>> va_hidTasks)
+         * @return true, if it was successful
          */
-        inline void scheduleHidTask(std::shared_ptr<HIDTask> &hidTask) {
-            scheduleHidTasks({hidTask});
+        inline bool scheduleHidTask(std::shared_ptr<HIDTask> &hidTask) {
+            return scheduleHidTasks({hidTask}) > 0;
         }
 
         /**

@@ -17,6 +17,7 @@
 */
 
 #include "Button.h"
+#include <complex>
 
 namespace brunothg_pico_hid {
 

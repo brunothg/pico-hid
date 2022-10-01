@@ -26,6 +26,9 @@ namespace brunothg_pico_hid {
     const std::string AppConfig::APP_NAME = "${APP_NAME}";
     const std::string AppConfig::APP_VERSION = "${APP_VERSION}";
 
+    const uint AppConfig::HID_SPEED_LEVEL_COUNT = ${APP_HID_SPEED_LEVEL_COUNT};
+    const uint AppConfig::HID_SPEED_LEVEL_MS = ${APP_HID_SPEED_LEVEL_MS};
+
     /*
      * GPIO definitions
      */

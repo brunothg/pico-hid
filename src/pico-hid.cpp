@@ -26,9 +26,6 @@
 #include "core1/Core1.h"
 
 void core0_func() {
-    board_init();
-    tusb_init();
-
     brunothg_pico_hid::Core0::run();
 }
 
@@ -38,6 +35,8 @@ void core1_func() {
 
 int main() {
     stdio_init_all();
+    board_init();
+    tusb_init();
 
     puts((
                  brunothg_pico_hid::AppConfig::APP_NAME + "(" + brunothg_pico_hid::AppConfig::getBoardId() + ")"
