@@ -81,8 +81,9 @@ namespace brunothg_pico_hid {
         auto remainingSize = HID::hidTasksLimit - hidTasks.size();
         if (remainingSize >= va_hidTasks.size() || partial) {
             for (const auto &hidTask: va_hidTasks) {
-                if (hidTasks.size() < HID::hidTasksLimit) {
+                if (remainingSize > 0) {
                     hidTasks.push(hidTask);
+                    remainingSize--;
                     successCount++;
                 }
             }
