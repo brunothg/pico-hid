@@ -16,7 +16,6 @@
 * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#include <cstdarg>
 #include "HID.h"
 
 #include "HIDEvents.h"
@@ -75,16 +74,21 @@ namespace brunothg_pico_hid {
         return hidTaskRunning;
     }
 
-    int HID::scheduleHidTasks(std::initializer_list<std::shared_ptr<HIDTask>> va_hidTasks) {
+    int HID::scheduleHidTasks(std::initializer_list<std::shared_ptr<HIDTask>> va_hidTasks, bool partial) {
         int successCount = 0;
+
         critical_section_enter_blocking(&hidTaskSection);
-        for (const auto &hidTask: va_hidTasks) {
-            if (hidTasks.size() < 1500) {
-                hidTasks.push(hidTask);
-                successCount++;
+        auto remainingSize = HID::hidTasksLimit - hidTasks.size();
+        if (remainingSize >= va_hidTasks.size() || partial) {
+            for (const auto &hidTask: va_hidTasks) {
+                if (hidTasks.size() < HID::hidTasksLimit) {
+                    hidTasks.push(hidTask);
+                    successCount++;
+                }
             }
         }
         critical_section_exit(&hidTaskSection);
+
         return successCount;
     }
 

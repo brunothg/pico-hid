@@ -18,7 +18,6 @@
 
 #include "KeyboardTask.h"
 
-#include <cmath>
 #include "HID.h"
 #include "util/AppConfig.h"
 
