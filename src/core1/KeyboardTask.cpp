@@ -17,6 +17,7 @@
 */
 
 #include "KeyboardTask.h"
+#include <cmath>
 
 #include "HID.h"
 #include "util/AppConfig.h"
@@ -38,6 +39,10 @@ namespace brunothg_pico_hid {
         return keysEnabled;
     }
 
+    uint8_t calculateRandomKeyCode() {
+        return HID_KEY_A + (uint8_t) std::floor((HID_KEY_Z - HID_KEY_A) * ((double) rand() / RAND_MAX));
+    }
+
     void KeyboardTask::run() {
         if (!keysEnabled) {
             return;
@@ -48,14 +53,13 @@ namespace brunothg_pico_hid {
         if (timestamp >= runTimestamp) {
             runTimestamp = delayed_by_ms(timestamp,calculateRandomisedDelay());
 
-            std::vector<uint8_t> keycode{HID_KEY_A};
+            std::vector<uint8_t> keycode{calculateRandomKeyCode()};
             std::shared_ptr<HIDTask> keyboardATask = std::make_shared<HIDKeyboardTask>(0, keycode);
             std::shared_ptr<HIDTask> keyboardNullTask = std::make_shared<HIDKeyboardTask>(0);
 
             hid.scheduleHidTasks({keyboardATask, keyboardNullTask});
         }
 
-        // TODO run keyboard
     }
 
 

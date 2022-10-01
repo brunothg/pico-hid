@@ -81,8 +81,7 @@ namespace brunothg_pico_hid {
         if (buttonsEnabled && timestamp > runTimestampClick) {
             runTimestampClick = delayed_by_ms(timestamp, calculateRandomisedDelay());
 
-            // TODO run mouse click
-            std::shared_ptr<HIDTask> mouseClickTask = std::make_shared<HIDMouseTask>(MOUSE_BUTTON_RIGHT, 0, 0, 0,
+            std::shared_ptr<HIDTask> mouseClickTask = std::make_shared<HIDMouseTask>(MOUSE_BUTTON_LEFT, 0, 0, 0,
                                                                                      0);
             std::shared_ptr<HIDTask> mouseReleaseTask = std::make_shared<HIDMouseTask>(0x00, 0, 0, 0, 0);
             hid.scheduleHidTasks({mouseClickTask, mouseReleaseTask});
